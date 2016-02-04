@@ -164,6 +164,11 @@ public class EarthquakeCityMap extends PApplet {
 	    	System.out.println(fontList[i]);
 	    }
 	    */
+
+	    System.out.println("dispalying diff ages: ");
+	    for( Marker quake : quakeMarkers ) {
+	    	System.out.println(quake.getStringProperty("age"));
+	    }
 	}  // End setup
 
 
@@ -373,6 +378,8 @@ public class EarthquakeCityMap extends PApplet {
 		String message;
 		//float msgWidth;
 
+		String cityName = lastClicked.getStringProperty("name");
+		String countryName = lastClicked.getStringProperty("country");
 		//rect(xbase, ybase, 150, 250);
 		/*
 		 * to calculate text width:
@@ -391,13 +398,45 @@ public class EarthquakeCityMap extends PApplet {
 			//msgWidth = textWidth(message);
 			text(message, xbase+30, ybase+25);
 
+			textFont(regular);
+			message = "City: " + cityName;
+			text(message, xbase+22, ybase+50);
+
+			message = "Country: " + countryName;
+			text(message, xbase+22, ybase+65);
+
 			//textAlign(LEFT);
 			fill(0);
 			textSize(12);
 			textFont(regular);
 			message = "No Nearby Quakes";
+			text(message, xbase+22, ybase+90);
+
+		}
+		else {
+			rectHeight = 150;
+			rect(xbase, ybase, rectWidth, rectHeight);
+			fill(0);
+			//textAlign(CENTER);
+			textSize(14);
+			textFont(bold);
+			message = "City Statistics";
+			//msgWidth = textWidth(message);
+			text(message, xbase+30, ybase+25);
+
+			textFont(regular);
+			message = "City: " + cityName;
 			text(message, xbase+22, ybase+50);
 
+			message = "Country: " + countryName;
+			text(message, xbase+22, ybase+65);
+
+			message = "Nearby Quakes: " + countNearByQuakes;
+			text(message, xbase+22, ybase+90);
+
+			avgMag = Math.round(avgMag * 100.0)/100.0;
+			message = "Avg Magnitue: " + avgMag;
+			text(message, xbase+22, ybase+105);
 		}
 
 		popStyle();
