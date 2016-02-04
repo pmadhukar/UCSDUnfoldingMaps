@@ -181,11 +181,14 @@ public class EarthquakeCityMap extends PApplet {
 	public void draw() {
 		background(0);
 
+		/*
 		currentMap.addMarkers(quakeMarkers);
 	    currentMap.addMarkers(cityMarkers);
+	    */
 
 		currentMap.draw();
 		addKey();
+		additionalKey();
 
 		if( lastClicked != null && lastClicked instanceof CityMarker ) {
 			popUpCityClicked(countNearByQuakes, avgMag, countRecentQuakes);
@@ -213,6 +216,22 @@ public class EarthquakeCityMap extends PApplet {
 	    } else if (key == '3') {
 	    	currentMap = map3;
 	    }
+	    if( key == 'r' || key == 'R') {
+	    	if( currentMap == map1 ) {
+	    		map1 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+	    		currentMap = map1;
+	    	}
+	    	else if( currentMap == map2 ) {
+	    		map2 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
+	    		currentMap = map2;
+	    	}
+	    	else if( currentMap == map3 ) {
+	    		map3 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleTerrainProvider());
+	    		currentMap = map3;
+	    	}
+	    }
+	    currentMap.addMarkers(quakeMarkers);
+	    currentMap.addMarkers(cityMarkers);
 	}
 
 
@@ -405,7 +424,7 @@ public class EarthquakeCityMap extends PApplet {
 		int rectWidth = 150;
 		int rectHeight;
 		int xbase = 25;
-		int ybase = 320;
+		int ybase = 460;
 		String message;
 		//float msgWidth;
 
@@ -477,6 +496,30 @@ public class EarthquakeCityMap extends PApplet {
 
 	}
 
+	//TODO : Additional key
+	private void additionalKey() {
+		pushStyle();
+		fill(255, 250, 240);
+
+		int xbase = 25;
+		int ybase = 320;
+
+		rect(xbase, ybase, 150, 130);
+
+		textFont(bold);
+		fill(0);
+		text("Instructions", xbase+25, ybase+15);
+
+		textFont(regular);
+		text("Press key: ", xbase+10, ybase+35);
+		text("1: GoogleMapProvider ", xbase+10, ybase+50);
+		text("2: Microsft's map", xbase+10, ybase+65);
+		text("3: GoogleTerrainProvider", xbase+10, ybase+80 );
+		text("r/R: reload tiles for a", xbase+10, ybase+95);
+		text("particular map", xbase+10, ybase+110);
+		popStyle();
+	}
+
 	// helper method to draw key in GUI
 	private void addKey() {
 		// Remember you can use Processing's graphics methods here
@@ -542,7 +585,6 @@ public class EarthquakeCityMap extends PApplet {
 		strokeWeight(2);
 		line(centerx-8, centery-8, centerx+8, centery+8);
 		line(centerx-8, centery+8, centerx+8, centery-8);
-
 
 	}
 
