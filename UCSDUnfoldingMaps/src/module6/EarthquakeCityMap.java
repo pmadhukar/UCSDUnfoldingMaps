@@ -20,6 +20,7 @@ import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
@@ -72,6 +73,14 @@ public class EarthquakeCityMap extends PApplet {
 	// NEW IN MODULE 5
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
+
+	//TODO : pop ups
+	private int countNearByQuakes=0;
+	private double avgMag=0.0;
+	private double sumMag = 0.0;
+
+	private PFont bold = createFont("Arial Bold",13);
+	private PFont regular = createFont("Arial",12);
 
 	public void setup() {
 		// (1) Initializing canvas and map tiles
@@ -136,7 +145,7 @@ public class EarthquakeCityMap extends PApplet {
 	    }
 
 	    // could be used for debugging
-	    printQuakes();
+	    //printQuakes();
 
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
@@ -144,10 +153,17 @@ public class EarthquakeCityMap extends PApplet {
 	    currentMap.addMarkers(quakeMarkers);
 	    currentMap.addMarkers(cityMarkers);
 
-	    sortAndPrint(5);
-	    System.out.println();
-	    sortAndPrint(20);
+	    //sortAndPrint(5);
+	    //System.out.println();
+	    //sortAndPrint(20);
 
+	    //Used to get fonts on my system
+	    /*
+	    String[] fontList = PFont.list();
+	    for( int i=0; i<fontList.length; i++) {
+	    	System.out.println(fontList[i]);
+	    }
+	    */
 	}  // End setup
 
 
@@ -160,10 +176,17 @@ public class EarthquakeCityMap extends PApplet {
 		currentMap.draw();
 		addKey();
 
+		if( lastClicked != null && lastClicked instanceof CityMarker ) {
+			popUpCityClicked(countNearByQuakes, avgMag);
+		}
+
 		//Extension
 		//To display lat and long at mouse pointer location
 		Location location = currentMap.getLocation(mouseX, mouseY);
 	    fill(0);
+	    if( currentMap == map2 ) {
+	    	fill(255);
+	    }
 	    //mouseX is the x-coord and mouseY is the y-coord where
 	    //the lat and long will be displayed
 	    text(Math.round(location.getLat()*100.0)/100.0 + ", " + Math.round(location.getLon()*100.0)/100.0, mouseX, mouseY);
@@ -182,7 +205,7 @@ public class EarthquakeCityMap extends PApplet {
 	}
 
 
-	// TODO: Add the method:
+	// TO DO: Add the method:
 	//   private void sortAndPrint(int numToPrint)
 	// and then call that method from setUp
 	private void sortAndPrint( int numToPrint ) {
@@ -256,28 +279,48 @@ public class EarthquakeCityMap extends PApplet {
 	// and respond appropriately
 	private void checkCitiesForClick()
 	{
+		countNearByQuakes = 0;
+		sumMag = 0.0;
+		avgMag = 0.0;
+
 		if (lastClicked != null) return;
-		// Loop over the earthquake markers to see if one of them is selected
+		// initial comment: Loop over the earthquake markers to see if one of them is selected
+		// correction : Loop over the city markers to see if one of them is selected
 		for (Marker marker : cityMarkers) {
 			if (!marker.isHidden() && marker.isInside(currentMap, mouseX, mouseY)) {
 				lastClicked = (CommonMarker)marker;
-				// Hide all the other earthquakes and hide
+				// Hide all the other cities
 				for (Marker mhide : cityMarkers) {
 					if (mhide != lastClicked) {
 						mhide.setHidden(true);
 					}
 				}
+				// Hide quakes outside threat circle
 				for (Marker mhide : quakeMarkers) {
 					EarthquakeMarker quakeMarker = (EarthquakeMarker)mhide;
 					if (quakeMarker.getDistanceTo(marker.getLocation())
 							> quakeMarker.threatCircle()) {
 						quakeMarker.setHidden(true);
 					}
+					else {
+						countNearByQuakes++;
+						sumMag += quakeMarker.getMagnitude();
+
+					}
 				}
+
+				avgMag = sumMag / (double)countNearByQuakes;
+				/*
+				if( lastClicked != null ) {
+					popUpCityClicked( countNearByQuakes, avgMag );
+				}
+				*/
 				return;
 			}
 		}
 	}
+
+
 
 	// Helper method that will check if an earthquake marker was clicked on
 	// and respond appropriately
@@ -317,6 +360,50 @@ public class EarthquakeCityMap extends PApplet {
 		}
 	}
 
+	//TODO: popUpCityClicked
+	private void popUpCityClicked( int countNearByQuakes, double avgMag ) {
+		pushStyle();
+
+		fill(255, 250, 240);
+
+		int rectWidth = 150;
+		int rectHeight;
+		int xbase = 25;
+		int ybase = 320;
+		String message;
+		//float msgWidth;
+
+		//rect(xbase, ybase, 150, 250);
+		/*
+		 * to calculate text width:
+		 * String s = "Tokyo";
+		 * float sw = textWidth(s);
+		 */
+
+		if( countNearByQuakes == 0 ) {
+			rectHeight = 125;
+			rect(xbase, ybase, rectWidth, rectHeight);
+			fill(0);
+			//textAlign(CENTER);
+			textSize(14);
+			textFont(bold);
+			message = "City Statistics";
+			//msgWidth = textWidth(message);
+			text(message, xbase+30, ybase+25);
+
+			//textAlign(LEFT);
+			fill(0);
+			textSize(12);
+			textFont(regular);
+			message = "No Nearby Quakes";
+			text(message, xbase+22, ybase+50);
+
+		}
+
+		popStyle();
+
+	}
+
 	// helper method to draw key in GUI
 	private void addKey() {
 		// Remember you can use Processing's graphics methods here
@@ -330,8 +417,10 @@ public class EarthquakeCityMap extends PApplet {
 		fill(0);
 		textAlign(LEFT, CENTER);
 		textSize(12);
+		textFont(bold);
 		text("Earthquake Key", xbase+25, ybase+25);
 
+		textFont(regular);
 		fill(150, 30, 30);
 		int tri_xbase = xbase + 35;
 		int tri_ybase = ybase + 50;
@@ -345,8 +434,11 @@ public class EarthquakeCityMap extends PApplet {
 
 		text("Land Quake", xbase+50, ybase+70);
 		text("Ocean Quake", xbase+50, ybase+90);
-		text("Size ~ Magnitude", xbase+25, ybase+110);
 
+		textFont(bold);
+		text("Size ~ Magnitude", xbase+25, ybase+115);
+
+		textFont(regular);
 		fill(255, 255, 255);
 		ellipse(xbase+35,
 				ybase+70,
