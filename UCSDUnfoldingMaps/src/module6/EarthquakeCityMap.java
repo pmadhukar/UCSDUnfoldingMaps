@@ -230,6 +230,7 @@ public class EarthquakeCityMap extends PApplet {
 	    		currentMap = map3;
 	    	}
 	    }
+	    MapUtils.createDefaultEventDispatcher(this, currentMap);
 	    currentMap.addMarkers(quakeMarkers);
 	    currentMap.addMarkers(cityMarkers);
 	}
