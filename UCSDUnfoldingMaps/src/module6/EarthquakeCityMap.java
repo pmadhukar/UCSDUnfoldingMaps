@@ -59,7 +59,7 @@ public class EarthquakeCityMap extends PApplet {
 	private UnfoldingMap map2;
 	//had to remove map3 because it was giving following error:
 	//Server returned HTTP response code: 403 for URL: http://a.tile.cloudmade.com/YOUR-OWN-KEY/23058/256/2/2/1.png
-	//private UnfoldingMap map3;
+	private UnfoldingMap map3;
 
 	// Markers for each city
 	private List<Marker> cityMarkers;
@@ -94,8 +94,8 @@ public class EarthquakeCityMap extends PApplet {
 		//Extension
 		map1 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
 	    map2 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
-	    //map3 = new UnfoldingMap(this, new OpenStreetMap.CloudmadeProvider(MapDisplayFactory.OSM_API_KEY, 23058));
-	    MapUtils.createDefaultEventDispatcher(this, map1, map2);
+	    map3 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleTerrainProvider());
+	    MapUtils.createDefaultEventDispatcher(this, map1, map2, map3);
 
 	    currentMap = map1;
 
@@ -176,6 +176,8 @@ public class EarthquakeCityMap extends PApplet {
 	        currentMap = map1;
 	    } else if (key == '2') {
 	        currentMap = map2;
+	    } else if (key == '3') {
+	    	currentMap = map3;
 	    }
 	}
 
