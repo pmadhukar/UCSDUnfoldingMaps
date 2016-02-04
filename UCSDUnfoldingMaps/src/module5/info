@@ -1,0 +1,56 @@
+Here's how our code handled mouse clicks:
+
+When the user clicks the mouse, the mouseClicked code in EarthquakeCityMap is called by Java.
+This method first checks the lastClicked variable. If it is null, meaning a city is already shown as "clicked",
+it sets lastClicked to null and unhides all the cities and earthquakes.
+
+Otherwise, it relies on two helper methods: checkEarthquakesForClick and checkCitiesForClick.
+
+checkEarthquakesForClick first checks lastClicked, and aborts if it is not null (just in case).
+Then it loops through all the earthquakes to see if one has been clicked on. If it finds one,
+it loops through all of the earthquake markers and sets all but the clicked earthquake to hidden.
+Then it loops through the city markers and
+sets all of the city markers outside of the clicked earthquake's threat circle to be hidden.
+It then returns so that it does not check anymore earthquakes.
+
+checkCitiesForClick first checks lastClicked, and aborts if it is not null (which could mean an earthquake has already been found as clicked).
+Then it loops through all the cities to see if one has been clicked on.
+If it finds one, it loops through all of the city markers and sets all but the clicked city to hidden.
+Then it loops through the earthquake markers and sets all of the earthquake markers for which the city is
+outside of the threat circle to be hidden. It then returns so that it does not check anymore cities.
+
+
+My response:
+There can be three types of clicks:
+1) Click on a Earthquake marker
+2) Click on a City marker
+3) Click on places other than above two markers.
+
+In case 3, the state of map remains unchanged.
+
+The clicking is handled by method mouseClicked()
+mouseClicked has two methods:
+quakeClicked() and cityClicked()
+
+1. If lastClicked not null, unhide all markers and set lastClicked to null.
+2. Else if lastClicked is null, Check if any Earthquake was clicked (by calling quakeClicked())
+If earthquake was clicked:
+quakeClicked() loops over all the quakes, and hides all quakes other than the one clicked.
+Also it shows only those cities which are within threat circle. Other cities are hidden.
+After a quake has been clicked, and above operations are performed, quakeClicked() returns.
+
+If a city was clicked:
+cityClicked() is loops over all the cities, and hides all cities other than the one clicked.
+Also it shows only those earthquakes, under whose threat circle this city comes. Other quakes are hidden.
+After a city has been clicked, and above operations are performed, cityClicked() returns.
+
+
+
+private voide checkCitiesForClick(){
+	if( lastClicked != null ){
+		return;
+	}
+	for( Marker marker : cityMarkers ) {
+		if( !marker.isHidden() && maker.isInside(map, mouseX, mouseY) )
+	}
+}

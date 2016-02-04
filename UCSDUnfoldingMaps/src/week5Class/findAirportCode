@@ -1,0 +1,8 @@
+public static String findAirportCode(String toFind, Airport[] airports) {
+	for( Airport airport : airports ) {
+		if( toFind.equalsIgnoreCase(airport.getCity()) ) {
+			return airport.getCode3();
+		}
+	}
+	return null;
+}

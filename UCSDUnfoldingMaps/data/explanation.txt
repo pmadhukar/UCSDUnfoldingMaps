@@ -1,0 +1,53 @@
+//Loop through all the markers in List countryMarkers
+
+for( Marker marker : countryMarkers ){
+
+	//gets the id field from each marker
+	//notice that in countries.geo.json every row containing 
+	//information about a country ends with an id field
+	//it's something like "id":"AFG"
+	//So every feature is populated by this id along with 
+	//other properties
+	//so String countryId will contain something like "AFG" 
+	//which will vary in every new loop run
+	String countryId = marker.getId();
+	
+	//just to be sure of the value of countryId 
+	System.out.println("id of the marker is: " + countryId);
+
+	//lifeExpByCountry is a Map<String, Float> 
+	//which is populated by loadLifeExpFromCSV() method in setup()
+	//Notice that in loadLifeExpFromCSV() method we populate the
+	//map with key as the column which contains country code like "AFG"
+	//we check if our above countryId exists in the map's keys or not.
+	if(lifeExpByCountry.containsKey(countryId)){
+		
+		//if countryId exists in keys then get the corresponding value 
+		//from the Map
+		float lifeExp = lifeExpByCountry.get(countryId);
+		
+		//map method just maps the lifeExp value (which is the life expectancy 
+		//value for each country)
+		//lifeExp will be in range of 40-90 but color values can only be 
+		//between 0 to 255(both inclusive)
+		//so we use map() method from Processing Library to convert (actually map)
+		//each lifeExp value to a corresponding integer between 0 to 255
+		//go to following link to understand how map() method works:
+		//http://stackoverflow.com/questions/17134839/how-does-the-map-function-in-processing-work
+		//if lifeExp is near the value 90 the colorLevel will be near the value 255
+		//and if lifeExp is near the value 40 then colorLevel will be near the value 0
+		int colorLevel = (int) map(lifeExp, 40, 90, 10, 255);
+		
+		//we set the color of the marker accordingly
+		//so if the colorLevel is high which means lifeExp is nearer to 90, then
+		//255-colorLevel will be low value 
+		//say colorLevel is 245, then it will be something like color(10, 100, 245)
+		//which will give a shade closer to blue color
+		//and if colorLevel is low, then by similar logic you will get a color closer to Red
+		marker.setColor(color(255-colorLevel, 100, colorLevel));
+	}
+	else {
+		//country code not found in map, color the marker grey
+		marker.setColor(color(150, 150, 150));
+	}
+}
