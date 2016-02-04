@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sound.midi.Receiver;
+
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
@@ -78,6 +80,7 @@ public class EarthquakeCityMap extends PApplet {
 	private int countNearByQuakes=0;
 	private double avgMag=0.0;
 	private double sumMag = 0.0;
+	private int countRecentQuakes=0;
 
 	private PFont bold = createFont("Arial Bold",13);
 	private PFont regular = createFont("Arial",12);
@@ -153,8 +156,8 @@ public class EarthquakeCityMap extends PApplet {
 	    currentMap.addMarkers(quakeMarkers);
 	    currentMap.addMarkers(cityMarkers);
 
-	    //sortAndPrint(5);
-	    //System.out.println();
+	    //sortAndPrint(quakeMarkers.size());
+	    System.out.println();
 	    //sortAndPrint(20);
 
 	    //Used to get fonts on my system
@@ -165,10 +168,13 @@ public class EarthquakeCityMap extends PApplet {
 	    }
 	    */
 
+	    //To check age of different earthquakes
+	    /*
 	    System.out.println("dispalying diff ages: ");
 	    for( Marker quake : quakeMarkers ) {
 	    	System.out.println(quake.getStringProperty("age"));
 	    }
+	    */
 	}  // End setup
 
 
@@ -182,7 +188,7 @@ public class EarthquakeCityMap extends PApplet {
 		addKey();
 
 		if( lastClicked != null && lastClicked instanceof CityMarker ) {
-			popUpCityClicked(countNearByQuakes, avgMag);
+			popUpCityClicked(countNearByQuakes, avgMag, countRecentQuakes);
 		}
 
 		//Extension
@@ -218,9 +224,26 @@ public class EarthquakeCityMap extends PApplet {
 		quakeArr = quakeMarkers.toArray( quakeArr );
 		Arrays.sort(quakeArr);
 
+		/*
+		 * following block to find greatest magnitude
+		 * occuring three or more times.
+		 */
+		for( int i=0; i<numToPrint; i++) {
+			if( quakeArr[i].getMagnitude() == quakeArr[i+1].getMagnitude()
+					&& quakeArr[i+1].getMagnitude() == quakeArr[i+2].getMagnitude() ) {
+				System.out.println(quakeArr[i].getMagnitude());
+				break;
+			}
+
+		}
+		/*
+		 * to print quakes in reverse order of magnitude
+		 */
+		/*
 		for( int i=0; i<numToPrint && i<quakeArr.length; i++ ) {
 			System.out.println( quakeArr[i].getTitle() );
 		}
+		*/
 	}
 
 	/** Event handler that gets called automatically when the
@@ -287,6 +310,7 @@ public class EarthquakeCityMap extends PApplet {
 		countNearByQuakes = 0;
 		sumMag = 0.0;
 		avgMag = 0.0;
+		countRecentQuakes = 0;
 
 		if (lastClicked != null) return;
 		// initial comment: Loop over the earthquake markers to see if one of them is selected
@@ -310,6 +334,13 @@ public class EarthquakeCityMap extends PApplet {
 					else {
 						countNearByQuakes++;
 						sumMag += quakeMarker.getMagnitude();
+
+						String age = quakeMarker.getStringProperty("age");
+						//System.out.println("title: " + quakeMarker.getTitle());
+						//System.out.println("age: " + age);
+						if( "Past Hour".equals(age) || "Past Day".equals(age) ) {
+							countRecentQuakes++;
+						}
 
 					}
 				}
@@ -366,7 +397,7 @@ public class EarthquakeCityMap extends PApplet {
 	}
 
 	//TODO: popUpCityClicked
-	private void popUpCityClicked( int countNearByQuakes, double avgMag ) {
+	private void popUpCityClicked( int countNearByQuakes, double avgMag, int countRecentQuakes ) {
 		pushStyle();
 
 		fill(255, 250, 240);
@@ -437,6 +468,9 @@ public class EarthquakeCityMap extends PApplet {
 			avgMag = Math.round(avgMag * 100.0)/100.0;
 			message = "Avg Magnitue: " + avgMag;
 			text(message, xbase+22, ybase+105);
+
+			message = "Recent Quakes: " + countRecentQuakes;
+			text(message, xbase+22, ybase+120);
 		}
 
 		popStyle();
