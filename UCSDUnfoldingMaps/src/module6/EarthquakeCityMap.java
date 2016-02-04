@@ -55,8 +55,8 @@ public class EarthquakeCityMap extends PApplet {
 
 	// The map
 	private UnfoldingMap currentMap;
-	//private UnfoldingMap map1;
-	//private UnfoldingMap map2;
+	private UnfoldingMap map1;
+	private UnfoldingMap map2;
 	//had to remove map3 because it was giving following error:
 	//Server returned HTTP response code: 403 for URL: http://a.tile.cloudmade.com/YOUR-OWN-KEY/23058/256/2/2/1.png
 	//private UnfoldingMap map3;
@@ -76,6 +76,8 @@ public class EarthquakeCityMap extends PApplet {
 	public void setup() {
 		// (1) Initializing canvas and map tiles
 		size(900, 700, OPENGL);
+
+		/*
 		if (offline) {
 		    currentMap = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
@@ -87,12 +89,15 @@ public class EarthquakeCityMap extends PApplet {
 		    //earthquakesURL = "2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, currentMap);
+		*/
 
 		//Extension
-		//map1 = new UnfoldingMap(this, new Google.GoogleMapProvider());
-	    //map2 = new UnfoldingMap(this, new Microsoft.AerialProvider());
+		map1 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+	    map2 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
 	    //map3 = new UnfoldingMap(this, new OpenStreetMap.CloudmadeProvider(MapDisplayFactory.OSM_API_KEY, 23058));
-	    //MapUtils.createDefaultEventDispatcher(this, map1, map2);
+	    MapUtils.createDefaultEventDispatcher(this, map1, map2);
+
+	    currentMap = map1;
 
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
@@ -148,8 +153,10 @@ public class EarthquakeCityMap extends PApplet {
 
 	public void draw() {
 		background(0);
+
 		currentMap.addMarkers(quakeMarkers);
 	    currentMap.addMarkers(cityMarkers);
+
 		currentMap.draw();
 		addKey();
 
@@ -163,7 +170,7 @@ public class EarthquakeCityMap extends PApplet {
 
 	}
 
-	/*
+	//Extension
 	public void keyPressed() {
 	    if (key == '1') {
 	        currentMap = map1;
@@ -171,7 +178,7 @@ public class EarthquakeCityMap extends PApplet {
 	        currentMap = map2;
 	    }
 	}
-	*/
+
 
 	// TODO: Add the method:
 	//   private void sortAndPrint(int numToPrint)
