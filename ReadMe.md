@@ -6,6 +6,6 @@ Course name: Object Oriented Programming in Java
 
 
 Project Description:  
-An interactive GUI module using Processing (https://processing.org/) and UnfoldingMaps (http://unfoldingmaps.org/).
-Displays a world map with live Earthquake data feed from http://earthquake.usgs.gov/
-Contains markers for Earthquakes and major cities in the world.
+An interactive GUI module using Processing (https://processing.org/) and UnfoldingMaps (http://unfoldingmaps.org/).  
+Displays a world map with live Earthquake data feed from http://earthquake.usgs.gov/  
+Contains markers for Earthquakes and major cities in the world.  
