@@ -1,8 +1,8 @@
-This is the project done under course 1 of Java Specialization course at Coursera.org
+This is the project done under course 1 of Java Specialization course at Coursera.org  
 
-Specialization name: "Java Programming: Object-Oriented Design of Data Structures" by UC San Diego.
-URL: https://www.coursera.org/specializations/java-object-oriented
-Course name: Object Oriented Programming in Java
+Specialization name: "Java Programming: Object-Oriented Design of Data Structures" by UC San Diego.  
+URL: https://www.coursera.org/specializations/java-object-oriented  
+Course name: Object Oriented Programming in Java  
 
 
 Project Description:  
