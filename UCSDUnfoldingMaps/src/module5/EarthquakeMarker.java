@@ -7,7 +7,7 @@ import processing.core.PGraphics;
 /** Implements a visual marker for earthquakes on an earthquake map
  *
  * @author UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
+ * @author Pratyushotpal Madhukar
  *
  */
 public abstract class EarthquakeMarker extends CommonMarker
